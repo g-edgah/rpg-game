@@ -1,0 +1,47 @@
+body{
+    background-color: blue;
+}
+
+div[id="game"]{
+    color:black;
+    background-color: lightgrey;
+    height:115px;
+    width: 480px;
+    border-top-width: 7px;
+    border-bottom-width: 17.5px;
+    border-right-width: 7px;
+    border-left-width: 7px;
+    border-color: lightgrey;
+    border-style: solid;
+    border-collapse: collapse;
+
+}
+
+div[id="stats"]{
+    padding: 5px;
+    border-width: 2px;
+    border-style: solid;
+}
+
+div[id="controls"]{
+    padding: 5px;
+    border-width: 2px;
+    border-style: solid;
+
+}
+
+div[class="stats"]{
+    border-width: 2px;
+}
+
+div[id="monsterStats"]{
+    background-color: black;
+    color: white;
+    height: 60px;
+    text-indent: 5px;
+  
+}
+
+div[id="monsterStats"] > span {
+    display: none;
+}
