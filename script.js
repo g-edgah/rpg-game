@@ -5,7 +5,7 @@
 let xp = 0;
 let health = 100;
 let gold = 5000;
-let currentWeapon = 0;
+let currentWeapon = 1;
 let fighting;              //without initializing
 let monsterHealth;
 let inventory = ["stick"];
@@ -17,6 +17,8 @@ let indexes = [0];
 const button1 = document.querySelector("#button1"); //notice the css selector type #el for ids
 const button2 = document.querySelector("#button2");
 const button3 = document.querySelector("#button3");
+const button4 = document.querySelector("#button4");
+const button5 = document.querySelector("#button5");
 const text = document.querySelector("#text");
 const xpText = document.querySelector("#xpText");
 const healthText = document.querySelector("#healthText");
@@ -24,14 +26,6 @@ const goldText = document.querySelector("#goldText");
 const monsterStats = document.querySelector("#xpText");
 const monsterNameText = document.querySelector("#monsterName");
 const monsterHealthText = document.querySelector("#monsterHealth");
-
-/*const button4 = document.createElement('button');
-button4.id = "button4";
-button4.innerText="more weapons";
-
-const button5 = document.createElement('button');
-button5.id = "button5";
-button5.innerText="more weapons";*/
 
 const weapons = [
     {
@@ -64,7 +58,26 @@ const weapons = [
         text: "sword bought",
         text2: "Sword sold",
     }
-]
+];
+
+const monsters=[
+    {
+        name: "slime",
+        level: 2,
+        health: 15
+
+    },
+    {
+        name: "fanged beast",
+        level: 8,
+        health: 60
+    },
+    {
+        name: "dragon",
+        level: 20,
+        health: 300
+    },
+];
 
 const locations=[
     {
@@ -105,13 +118,14 @@ function update(location){
 
 function goTown(){
     update(locations[0]);
-    console.log("going!")
+    console.log("going!");
+    button4.setAttribute("style", "display : none");
 }
 
 function goStore(){
     hideButtons();
     showFirstButtons();
-    document.getElementById("button4").setAttribute("style", "display: inline-block");
+    button4.setAttribute("style", "display: inline-block");
     update(locations[1]);
     button4.innerText = "sell items";
     button4.onclick = sellWeapon;
@@ -142,53 +156,46 @@ function buyWeapon(){
     button1.innerText = weapons[0]["name"];
     button2.innerText = weapons[1]["name"];
     button3.innerText = weapons[2]["name"];
-    button4.innerText ="more";
+    button4.innerText = weapons[3]["name"];
     button5.innerText ="go back to the store";
 
     button1.onclick = addStick; 
     button2.onclick = addDagger;
     button3.onclick = addHammer;
-    button4.onclick = buyWeapon2;
+    button4.onclick = addSword;
     button5.onclick = goStore;
-    text.innerText = "pick a weapon!"
-}
-function buyWeapon2(){
-    hideButtons;
-    document.getElementById("button3").setAttribute("style", "display: none");
-    document.getElementById("button4").setAttribute("style", "display: none");
-    document.getElementById("button5").setAttribute("style", "display: none");
-    button1.innerText = weapons[3]["name"];
-    button2.innerText ="go back to the store";
-
-    button1.onclick = addSword; 
-    button2.onclick = goStore;
-    text.innerText = "pick a weapon!"
+    text.innerHTML = "<strong>Buy weapon:<br>---stick for 1 gold ---dagger for 5 gold<br> ---claw hammer for 1 gold";
 }
 
 function getWeapon(position){
-    let index =weapons[position]
-    comparisonPower = index.power;
-    if (powerRecord.every(checkWeapon) == true){
-        if (inventory.length <= 5){    
-            if(gold >= index.price){
-                gold -= index.price;
-                currentWeapon += 1;
-                inventory.push(index.name);
-                text.innerText= index.text;
-                goldText.innerText = gold;
-                powerRecord.push(index.power);
-                prices.push(index.price);
-                indexes.push(position)
+    let a = position-1;
+    if (weapons[a].name == inventory[a]){
+        let index =weapons[position]
+        comparisonPower = index.power;
+        if (powerRecord.every(checkWeapon) == true){
+            if (inventory.length <= 4){    
+                if(gold >= index.price){
+                    gold -= index.price;
+                    currentWeapon += 1;
+                    inventory.push(index.name);
+                    text.innerText= index.text;
+                    goldText.innerText = gold;
+                    powerRecord.push(index.power);
+                    prices.push(index.price);
+                    indexes.push(position)
+                }
+                else{
+                    text.innerText="not enough gold"
+                }
+                }
+            else {
+                text.innerText="You are out of storage.Sell or drop some items "
             }
-            else{
-                text.innerText="not enough gold"
-            }
-            }
-        else {
-            text.innerText="You are out of storage.Sell or drop some items "
+        } else{
+            text.innerText= "you already have a better weapon"
         }
     } else{
-        text.innerText= "you already have a better weapon"
+        text.innerText = "you have not unlocked this weapon yet!"
     }
 }
 function addStick(){
@@ -214,52 +221,66 @@ function fightBeast(){
 }
 
 function showButtons(){
-    document.getElementById("button4").setAttribute("style", "display: inline-block");
-    document.getElementById("button5").setAttribute("style", "display: inline-block");
+    button4.setAttribute("style", "display: inline-block");
+    button5.setAttribute("style", "display: inline-block");
 }
 
 function hideButtons(){
-    document.getElementById("button4").setAttribute("style", "display: none");
-    document.getElementById("button5").setAttribute("style", "display: none");
+    button4.setAttribute("style", "display: none");
+    button5.setAttribute("style", "display: none");
 }
 function showFirstButtons(){
-    document.getElementById("button2").setAttribute("style", "display: inline-block");
-    document.getElementById("button3").setAttribute("style", "display: inline-block");
+    button2.setAttribute("style", "display: inline-block");
+    button3.setAttribute("style", "display: inline-block");
     
+}
+
+function sellWeaponShortened(d){
+    console.log(d)
+    showButtons();
+    button1.innerText = inventory[0];
+    button2.innerText = inventory[1];
+    button3.innerText = inventory[2];
+    button4.innerText =inventory[3];
+    button5.innerText ="go back to the store";
+
+    button1.onclick = sell0; 
+    button2.onclick = sell1;
+    button3.onclick = sell2;
+    button4.onclick = sell3;
+    button5.onclick = goStore;
+    text.innerHTML = "<strong>Sell weapon:<br>---stick for 1 gold ---dagger for 5 gold<br> ---claw hammer for 1 gold ---sword for 40 gold";
+
 }
 
 function checkWeapon(x) {
     return x < comparisonPower;
   }
 
-  function sellWeapon(){
-    showButtons();
-    button1.innerText = inventory[0];
-    button2.innerText = inventory[1];
-    button3.innerText = inventory[2];
-    button4.innerText ="more";
-    button5.innerText ="go back to the store";
+function sellWeapon(){
 
-    button1.onclick = sell0; 
-    button2.onclick = sell1;
-    button3.onclick = sell2;
-    button4.onclick = sellWeapon2;
-    button5.onclick = goStore;
-    text.innerText = "pick a weapon to sell!"
-}
-function sellWeapon2(){
-    hideButtons;
-    document.getElementById("button3").setAttribute("style", "display: none");
-    document.getElementById("button4").setAttribute("style", "display: none");
-    document.getElementById("button5").setAttribute("style", "display: none");
-    button1.innerText = inventory[3];
-    button2.innerText =inventory[4];
-    button2.innerText ="go back to the store";
+if (inventory.length <= 1){
+    sellWeaponShortened(20);
 
-    button1.onclick = sell3; 
-    button2.onclick = goStore;
-    text.innerText = "pick a weapon!"
+    button2.setAttribute("style", "display: none");
+    button3.setAttribute("style", "display: none");
+    button4.setAttribute("style", "display: none");
+} else if(inventory.length == 2){
+    sellWeaponShortened(20);
+
+    button3.setAttribute("style", "display: none");
+    button4.setAttribute("style", "display: none");
+} else if(inventory.length == 3) {
+    sellWeaponShortened(20);
+
+    button4.setAttribute("style", "display: none");
+} else {
+    sellWeaponShortened(20);
 }
+}
+
+
+
 function sell0(){
     giveWeapon(0);
  }
@@ -276,7 +297,10 @@ function sell0(){
     giveWeapon(4);
  }
 
- function giveWeapon(bon){
+
+
+function cutterButter(c) {
+    let bon=c+1;
     //let corespondingWeapon = weapons[bon];
     if(inventory.length >= 1){
         gold += prices[bon];
@@ -289,7 +313,23 @@ function sell0(){
         //prices.push(index.price)
     }
     else{
-        text.innerText="You cannot have 0 weapons!"
+       text.innerText="You cannot have 0 weapons!"
     }
+}
 
+
+function giveWeapon(f){
+    let g = f;
+    if (g >= 0){
+    let h = g - 1;
+        if (weapons[h].name !== inventory[h]){
+            cutterButter(h);
+        } else{
+            text.innerText = "you cannot sell this weapon."
+        }
+        
+    } else {
+        let b = 0;
+        cutterButter(b);
+    }
 }
