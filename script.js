@@ -4,7 +4,7 @@
 
 let xp = 0;
 let health = 100;
-let gold = 5000;
+let gold = 500;
 let currentWeapon = 1;
 let fighting;              //without initializing
 let monsterHealth;
@@ -59,6 +59,15 @@ const weapons = [
         text2: "Sword sold",
     }
 ];
+
+let stored = [{
+    name: "stick",
+    power: 5,
+    price: 1,
+    text: "stick bought",
+    "button function": addStick,
+    text2: "stick sold",
+},]
 
 const monsters=[
     {
@@ -168,21 +177,18 @@ function buyWeapon(){
 }
 
 function getWeapon(position){
-    let a = position-1;
+    const a = Number(position-1);
     if (weapons[a].name == inventory[a]){
-        let index =weapons[position]
-        comparisonPower = index.power;
+        let addedWeapon = weapons[position]
         if (powerRecord.every(checkWeapon) == true){
             if (inventory.length <= 4){    
-                if(gold >= index.price){
-                    gold -= index.price;
+                if(gold >= addedWeapon.price){
+                    gold -= addedWeapon.price;
                     currentWeapon += 1;
-                    inventory.push(index.name);
+                    inventory.push(addedWeapon.name);
+                    stored.push(addedWeapon);
                     text.innerText= index.text;
                     goldText.innerText = gold;
-                    powerRecord.push(index.power);
-                    prices.push(index.price);
-                    indexes.push(position)
                 }
                 else{
                     text.innerText="not enough gold"
@@ -254,31 +260,30 @@ function sellWeaponShortened(d){
 }
 
 function checkWeapon(x) {
-    return x < comparisonPower;
+    return x < stored[position].power;
   }
 
 function sellWeapon(){
 
 if (inventory.length <= 1){
-    sellWeaponShortened(20);
+    sellWeaponShortened(0);
 
     button2.setAttribute("style", "display: none");
     button3.setAttribute("style", "display: none");
     button4.setAttribute("style", "display: none");
 } else if(inventory.length == 2){
-    sellWeaponShortened(20);
+    sellWeaponShortened(0);
 
     button3.setAttribute("style", "display: none");
     button4.setAttribute("style", "display: none");
 } else if(inventory.length == 3) {
-    sellWeaponShortened(20);
+    sellWeaponShortened(0);
 
     button4.setAttribute("style", "display: none");
 } else {
-    sellWeaponShortened(20);
+    sellWeaponShortened(0);
 }
 }
-
 
 
 function sell0(){
@@ -293,43 +298,23 @@ function sell0(){
  function sell3(){
     giveWeapon(3);
  }
- function sell4(){
-    giveWeapon(4);
- }
 
+function giveWeapon(bon){
+    const matchExists = weapons.some(weapon => inventory.includes(weapons[bon].name)) ;
+    if (matchExists == true){ 
 
-
-function cutterButter(c) {
-    let bon=c+1;
-    //let corespondingWeapon = weapons[bon];
-    if(inventory.length >= 1){
-        gold += prices[bon];
-        currentWeapon -= 1;
-        //inventory.push(index.name);
-        delete inventory[bon];
-        text.innerText= weapons[bon].text2;
-        goldText.innerText = gold;
-        //powerRecord.push(index.power)
-        //prices.push(index.price)
-    }
-    else{
-       text.innerText="You cannot have 0 weapons!"
-    }
-}
-
-
-function giveWeapon(f){
-    let g = f;
-    if (g >= 0){
-    let h = g - 1;
-        if (weapons[h].name !== inventory[h]){
-            cutterButter(h);
-        } else{
-            text.innerText = "you cannot sell this weapon."
+        if (inventory.length >= 1){
+            gold += stored.price;
+            currentWeapon -= 1;
+            inventory = inventory.filter(item => item !== stored[bon].name);
+            stored = stored.filter(item => item.name !== stored[bon]);
+            text.innerText= stored[bon].text;
+            goldText.innerText = gold;
+        } else {
+            text.innerText  = "you cannot have 0 weapons"
         }
-        
+
     } else {
-        let b = 0;
-        cutterButter(b);
+        text.innerText = "you do not posses this weapon"
     }
 }
