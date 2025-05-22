@@ -14,6 +14,7 @@ div[id="game"]{
     border-color: lightgrey;
     border-style: solid;
     border-collapse: collapse;
+    margin: auto;
 
 }
 
