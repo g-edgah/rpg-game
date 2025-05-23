@@ -296,21 +296,33 @@ function sell0(){
  }
 
 function giveWeapon(bon){
-    const matchExists = weapons.some(weapon => inventory.includes(weapons[bon].name)) ;
-    if (matchExists == true){ 
+    if (inventory.includes(stored[bon].name)) {  //check if player has the weapon
+        if (bon == 0){
+            giveWeaponCore(bon);
+        }else{
+            if (inventory. includes(weapons[([bon]-1)])){  //make sure player  weapons in order of increasing power
+                text.innerText = "you cannot sell this weapon. You have less powerful weapon(s) in inventory"
+            } else{
+                giveWeaponCore(bon); 
+            }
+    }
+    } else{
+        text.innerText = "You do not have this weapon"
+    }
+}
 
-        if (inventory.length >= 1){
-            gold += stored.price;
-            currentWeapon -= 1;
-            inventory = inventory.filter(item => item !== stored[bon].name);
-            stored = stored.filter(item => item.name !== stored[bon]);
-            text.innerText= stored[bon].text;
-            goldText.innerText = gold;
-        } else {
-            text.innerText  = "you cannot have 0 weapons"
-        }
+function giveWeaponCore(bon2){ 
+    console.log(bon2)  
+    if (inventory.length > 1) {  //lensure player remains with at least 1 weapon
+
+        gold += weapons[bon2].price;
+        currentWeapon -= 1;
+        inventory.shift(weapons[bon2].name);
+        stored.shift(weapons[bon2]);
+        text.innerText= weapons[bon2].text2;
+        goldText.innerText = gold;
 
     } else {
-        text.innerText = "you do not posses this weapon"
+        text.innerText="You cannot have zero weapons"
     }
 }
