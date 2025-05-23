@@ -9,9 +9,6 @@ let currentWeapon = 1;
 let fighting;              //without initializing
 let monsterHealth;
 let inventory = ["stick"];
-let powerRecord = [5];
-let prices =[1];
-let indexes = [0];
 
 //referencing and updating html elements example
 const button1 = document.querySelector("#button1"); //notice the css selector type #el for ids
@@ -33,7 +30,6 @@ const weapons = [
         power: 5,
         price: 1,
         text: "stick bought",
-        "button function": addStick,
         text2: "stick sold",
     },
     {
@@ -41,8 +37,8 @@ const weapons = [
         power: 30,
         price: 5,
         text: "dagger bought",
-        "button function": addDagger,
         text2: "dagger sold",
+        
     },
     {
         name: "claw hammer",
@@ -50,6 +46,7 @@ const weapons = [
         price: 20,
         text: "claw hammer bought",
         text2: "claw hammer sold",
+        
     },
     {
         name: "sword",
@@ -57,17 +54,21 @@ const weapons = [
         price: 40,
         text: "sword bought",
         text2: "Sword sold",
+        
     }
 ];
+let abas = weapons[0].name;
 
-let stored = [{
-    name: "stick",
-    power: 5,
-    price: 1,
-    text: "stick bought",
-    "button function": addStick,
-    text2: "stick sold",
-},]
+
+const stored = [
+    {
+        name: "stick",
+        power: 5,
+        price: 1,
+        text: "stick bought",
+        text2: "stick sold",
+    },
+]
 
 const monsters=[
     {
@@ -162,51 +163,52 @@ function buyHealth(){
 }
 function buyWeapon(){
     showButtons();
-    button1.innerText = weapons[0]["name"];
-    button2.innerText = weapons[1]["name"];
-    button3.innerText = weapons[2]["name"];
-    button4.innerText = weapons[3]["name"];
-    button5.innerText ="go back to the store";
-
-    button1.onclick = addStick; 
-    button2.onclick = addDagger;
-    button3.onclick = addHammer;
-    button4.onclick = addSword;
-    button5.onclick = goStore;
+    button1.innerText = weapons[1]["name"];
+    button2.innerText = weapons[2]["name"];
+    button3.innerText = weapons[3]["name"];
+    button4.innerText ="go back to the store";
+    button5.setAttribute("style", "display: none");
+; 
+    button1.onclick = addDagger;
+    button2.onclick = addHammer;
+    button3.onclick = addSword;
+    button4.onclick = goStore;
     text.innerHTML = "<strong>Buy weapon:<br>---stick for 1 gold ---dagger for 5 gold<br> ---claw hammer for 1 gold";
 }
 
-function getWeapon(position){
-    const a = Number(position-1);
-    if (weapons[a].name == inventory[a]){
-        let addedWeapon = weapons[position]
-        if (powerRecord.every(checkWeapon) == true){
-            if (inventory.length <= 4){    
-                if(gold >= addedWeapon.price){
-                    gold -= addedWeapon.price;
-                    currentWeapon += 1;
-                    inventory.push(addedWeapon.name);
-                    stored.push(addedWeapon);
-                    text.innerText= index.text;
-                    goldText.innerText = gold;
-                }
-                else{
-                    text.innerText="not enough gold"
-                }
-                }
-            else {
-                text.innerText="You are out of storage.Sell or drop some items "
-            }
-        } else{
-            text.innerText= "you already have a better weapon"
-        }
+function getWeapon(index){
+   //const matchExists = fruits.some(fruit => allowedFruits.includes(fruit.name));
+    if (inventory.includes(weapons[index].name)) {  //check if player has the weapon already
+        text.innerText = "You already have this weapon!"
     } else{
-        text.innerText = "you have not unlocked this weapon yet!"
+        if (inventory.includes(weapons[(index+1).name])){ //check that player weapons aren't better than weapon being purchased
+            text.innerText = "You already have a more powerful weapon"
+        } else{
+            if (weapons[(index-1)].name == inventory[(inventory.length-1)]){  //make sure player purchases weapons in order of increasing power
+                if (inventory.length <= 4){  //limit on number of weapons a player can have at a time
+
+                    if(gold >= weapons[index].price){  //check that player has enough gold
+                        gold -= weapons[index].price;
+                        currentWeapon += 1;
+                        inventory.push(weapons[index].name);
+                        stored.push(weapons[index]);
+                        text.innerText= weapons[index].text;
+                        goldText.innerText = gold;
+                    } else{
+                        text.innerText="Not enough gold";
+                    }
+
+                    } else {
+                        text.innerText="You are out of storage."
+                    }
+            } else{
+                text.innerText = "you have not unlocked this weapon yet!"
+            }
+        }
     }
 }
-function addStick(){
-   getWeapon(0);
-}
+
+
 function addDagger(){
     getWeapon(1);
 }
@@ -259,32 +261,26 @@ function sellWeaponShortened(d){
 
 }
 
-function checkWeapon(x) {
-    return x < stored[position].power;
-  }
-
 function sellWeapon(){
+    if (inventory.length <= 1){
+        sellWeaponShortened(0);
 
-if (inventory.length <= 1){
-    sellWeaponShortened(0);
+        button2.setAttribute("style", "display: none");
+        button3.setAttribute("style", "display: none");
+        button4.setAttribute("style", "display: none");
+    } else if(inventory.length == 2){
+        sellWeaponShortened(0);
 
-    button2.setAttribute("style", "display: none");
-    button3.setAttribute("style", "display: none");
-    button4.setAttribute("style", "display: none");
-} else if(inventory.length == 2){
-    sellWeaponShortened(0);
+        button3.setAttribute("style", "display: none");
+        button4.setAttribute("style", "display: none");
+    } else if(inventory.length == 3) {
+        sellWeaponShortened(0);
 
-    button3.setAttribute("style", "display: none");
-    button4.setAttribute("style", "display: none");
-} else if(inventory.length == 3) {
-    sellWeaponShortened(0);
-
-    button4.setAttribute("style", "display: none");
-} else {
-    sellWeaponShortened(0);
+        button4.setAttribute("style", "display: none");
+    } else {
+        sellWeaponShortened(0);
+    }
 }
-}
-
 
 function sell0(){
     giveWeapon(0);
