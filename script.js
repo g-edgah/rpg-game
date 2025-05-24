@@ -1,17 +1,14 @@
-
-//semi colons are optional in js
-//declare your variables upfront like above even if you dont have a value for them yet.
-
 let xp = 0;
 let health = 100;
 let gold = 500;
 let currentWeapon = 1;
-let fighting;              //without initializing
+let fighting;          
 let monsterHealth;
 let inventory = ["stick"];
+let powerChat =[5];
 
-//referencing and updating html elements example
-const button1 = document.querySelector("#button1"); //notice the css selector type #el for ids
+
+const button1 = document.querySelector("#button1");
 const button2 = document.querySelector("#button2");
 const button3 = document.querySelector("#button3");
 const button4 = document.querySelector("#button4");
@@ -57,7 +54,6 @@ const weapons = [
         
     }
 ];
-let abas = weapons[0].name;
 
 
 const stored = [
@@ -123,7 +119,7 @@ function update(location){
     button1.onclick = location["button functions"][0]; 
     button2.onclick = location["button functions"][1];
     button3.onclick = location["button functions"][2];
-    text.innerText = location["text"];  //alternatively location.text if the key is a single word
+    text.innerText = location["text"]; 
 }
 
 function goTown(){
@@ -176,33 +172,33 @@ function buyWeapon(){
     text.innerHTML = "<strong>Buy weapon:<br>---stick for 1 gold ---dagger for 5 gold<br> ---claw hammer for 1 gold";
 }
 
-function getWeapon(index){
-   //const matchExists = fruits.some(fruit => allowedFruits.includes(fruit.name));
-    if (inventory.includes(weapons[index].name)) {  //check if player has the weapon already
+
+function getWeapon(weaponIndex){
+    if (inventory.includes(weapons[weaponIndex].name)) {  //check if player has the weapon already
         text.innerText = "You already have this weapon!"
     } else{
-        if (inventory.includes(weapons[(index+1).name])){ //check that player weapons aren't better than weapon being purchased
-            text.innerText = "You already have a more powerful weapon"
+        if (stored.some(value => value.power > weapons[weaponIndex].power) == true){ //check that player weapons aren't better than weapon being purchased
+            text.innerText = "You already have a more powerful weapon!"
         } else{
-            if (weapons[(index-1)].name == inventory[(inventory.length-1)]){  //make sure player purchases weapons in order of increasing power
+            if (weapons[(weaponIndex-1)].name == inventory[(inventory.length-1)]){  //make sure player purchases weapons in order of increasing power
                 if (inventory.length <= 4){  //limit on number of weapons a player can have at a time
 
-                    if(gold >= weapons[index].price){  //check that player has enough gold
-                        gold -= weapons[index].price;
+                    if(gold >= weapons[weaponIndex].price){  //check that player has enough gold
+                        gold -= weapons[weaponIndex].price;
                         currentWeapon += 1;
-                        inventory.push(weapons[index].name);
-                        stored.push(weapons[index]);
-                        text.innerText= weapons[index].text;
+                        inventory.push(weapons[weaponIndex].name);
+                        stored.push(weapons[weaponIndex]);
+                        text.innerText= weapons[weaponIndex].text;
                         goldText.innerText = gold;
                     } else{
-                        text.innerText="Not enough gold";
+                        text.innerText="Not enough gold!";
                     }
 
                     } else {
-                        text.innerText="You are out of storage."
+                        text.innerText="You are out of storage!"
                     }
             } else{
-                text.innerText = "you have not unlocked this weapon yet!"
+                text.innerText = "you cannot purchase this weapon yet!"
             }
         }
     }
@@ -261,7 +257,8 @@ function sellWeaponShortened(d){
 
 }
 
-function sellWeapon(){
+function sellWeapon(sold){
+    console.log(sold)
     if (inventory.length <= 1){
         sellWeaponShortened(0);
 
@@ -300,7 +297,7 @@ function giveWeapon(bon){
         if (bon == 0){
             giveWeaponCore(bon);
         }else{
-            if (inventory. includes(weapons[([bon]-1)])){  //make sure player  weapons in order of increasing power
+            if (inventory. includes(weapons[([bon]-1)])){  //make sure player sells weapons in order of increasing power
                 text.innerText = "you cannot sell this weapon. You have less powerful weapon(s) in inventory"
             } else{
                 giveWeaponCore(bon); 
@@ -315,12 +312,13 @@ function giveWeaponCore(bon2){
     console.log(bon2)  
     if (inventory.length > 1) {  //lensure player remains with at least 1 weapon
 
-        gold += weapons[bon2].price;
+        gold += stored[bon2].price;
         currentWeapon -= 1;
-        inventory.shift(weapons[bon2].name);
-        stored.shift(weapons[bon2]);
+        inventory.splice([bon2], 1);
+        stored.splice([bon2], 1);
         text.innerText= weapons[bon2].text2;
         goldText.innerText = gold;
+        sellWeapon(1);  //to refresh the page after every purchase
 
     } else {
         text.innerText="You cannot have zero weapons"
