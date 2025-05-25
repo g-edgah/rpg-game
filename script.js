@@ -1,11 +1,10 @@
 let xp = 0;
 let health = 100;
-let gold = 500;
+let gold = 100;
 let currentWeapon = 1;
 let fighting;          
 let monsterHealth;
 let inventory = ["stick"];
-let powerChat =[5];
 
 
 const button1 = document.querySelector("#button1");
@@ -26,32 +25,21 @@ const weapons = [
         name: "stick",
         power: 5,
         price: 1,
-        text: "stick bought",
-        text2: "stick sold",
     },
     {
         name: "dagger",
         power: 30,
         price: 5,
-        text: "dagger bought",
-        text2: "dagger sold",
-        
     },
     {
         name: "claw hammer",
         power: 50,
         price: 20,
-        text: "claw hammer bought",
-        text2: "claw hammer sold",
-        
     },
     {
         name: "sword",
         power: 100,
-        price: 40,
-        text: "sword bought",
-        text2: "Sword sold",
-        
+        price: 40, 
     }
 ];
 
@@ -61,10 +49,9 @@ const stored = [
         name: "stick",
         power: 5,
         price: 1,
-        text: "stick bought",
-        text2: "stick sold",
     },
 ]
+
 
 const monsters=[
     {
@@ -88,8 +75,8 @@ const monsters=[
 const locations=[
     {
     name: "town square", 
-    "button text":["Go to store.", "Go to cave.", "Fight the dragon."],
-    "button functions":[goStore, goCave, fightDragon],
+    "button text":["Go to store.", "Go to cave.", "Fight the dragon.", "inventory"],
+    "button functions":[goStore, goCave, fightDragon, seeInventory],
     text:"You are in the town square. You see a sign that says \"store\".",
     },
     {
@@ -100,61 +87,98 @@ const locations=[
     },
     {
     name: "cave",
-    "button text":["Fight slime", "Fight fanged beast", "Go to town", "sell weapons"],
+    "button text":["Fight slime", "Fight fanged beast", "Go to town"],
     "button functions":[fightSlime, fightBeast, goTown],
     text: "You enter the cave. You see some monsters"
-    }
+    },
 ]
 
 // initialize buttons
 button1.onclick = locations[0]["button functions"][0];
 button2.onclick = locations[0]["button functions"][1]; 
 button3.onclick = locations[0]["button functions"][2];
+button4.onclick = locations[0]["button functions"][3];
+
+
+
+function showButtons(){
+    button4.setAttribute("style", "display: inline-block");
+    button5.setAttribute("style", "display: inline-block");
+}
+
+function hideButtons(){
+    button4.setAttribute("style", "display: none");
+    button5.setAttribute("style", "display: none");
+}
+function showFirstButtons(){
+    button2.setAttribute("style", "display: inline-block");
+    button3.setAttribute("style", "display: inline-block");
+    
+}
+function hideLastButton(){
+    button4.setAttribute("style", "display: inline-block");
+    button5.setAttribute("style", "display: none");
+}
+
 
 function update(location){
     button1.innerText = location["button text"][0];
     button2.innerText = location["button text"][1];
     button3.innerText = location["button text"][2];
+    button4.innerText = location["button text"][3];
 
     button1.onclick = location["button functions"][0]; 
     button2.onclick = location["button functions"][1];
     button3.onclick = location["button functions"][2];
+    button4.onclick = location["button functions"][3];
     text.innerText = location["text"]; 
 }
 
 function goTown(){
+    button3.setAttribute("style", "display: inline-block");
+    button4.setAttribute("style", "display: inline-block");
+    button5.setAttribute("style", "display: none");
     update(locations[0]);
     console.log("going!");
-    button4.setAttribute("style", "display : none");
 }
 
 function goStore(){
-    hideButtons();
-    showFirstButtons();
+    console.log("store");
+    button5.setAttribute("style", "display: none");
     button4.setAttribute("style", "display: inline-block");
+    showFirstButtons();
+    
     update(locations[1]);
-    button4.innerText = "sell items";
-    button4.onclick = sellWeapon;
+    /*button4.innerText = "Sell items";
+    button4.onclick = sellWeapon;*/
 }
+
 function goCave(){
+    hideButtons;
+    button4.setAttribute("style", "display: none");
     update(locations[2]);
+
 }
 function fightDragon(){
-    console.log("fighting the dragon.");
+    console.log("fighting the dragon!");
 }
 
 function buyGold(){
     console.log("buying gold");
 }
 function buyHealth(){
-    if (gold >= 10){
-        gold -= 10;
-        health += 10;
-        healthText.innerText = health;
-        goldText.innerText = gold;
-    }
-    else{
-        text.innerText = "Not enough gold";
+    if (health < 100 ){
+        if (gold >= 10){
+            gold -= 10;
+            health += 10;
+            healthText.innerText = health;
+            goldText.innerText = gold;
+        }
+        else{
+            text.innerText = "Not enough gold!";
+        }
+    } else {
+        text.innerText= "You have maxed out your health!"
     }
 }
 function buyWeapon(){
@@ -169,7 +193,7 @@ function buyWeapon(){
     button2.onclick = addHammer;
     button3.onclick = addSword;
     button4.onclick = goStore;
-    text.innerHTML = "<strong>Buy weapon:<br>---stick for 1 gold ---dagger for 5 gold<br> ---claw hammer for 1 gold";
+    text.innerHTML = "<strong>Buy weapon:</strong><br> ---dagger for 5 gold  ---claw hammer for 20 gold<br>  ---Sword for 40 gold";
 }
 
 
@@ -188,7 +212,7 @@ function getWeapon(weaponIndex){
                         currentWeapon += 1;
                         inventory.push(weapons[weaponIndex].name);
                         stored.push(weapons[weaponIndex]);
-                        text.innerText= weapons[weaponIndex].text;
+                        text.innerText= weapons[weaponIndex].name+" bought for "+ weapons[weaponIndex].price+" gold!";
                         goldText.innerText = gold;
                     } else{
                         text.innerText="Not enough gold!";
@@ -224,22 +248,7 @@ function fightBeast(){
     console.log("fighting beast");
 }
 
-function showButtons(){
-    button4.setAttribute("style", "display: inline-block");
-    button5.setAttribute("style", "display: inline-block");
-}
-
-function hideButtons(){
-    button4.setAttribute("style", "display: none");
-    button5.setAttribute("style", "display: none");
-}
-function showFirstButtons(){
-    button2.setAttribute("style", "display: inline-block");
-    button3.setAttribute("style", "display: inline-block");
-    
-}
-
-function sellWeaponShortened(d){
+function sellWeaponCore(d){
     console.log(d)
     showButtons();
     button1.innerText = inventory[0];
@@ -253,29 +262,28 @@ function sellWeaponShortened(d){
     button3.onclick = sell2;
     button4.onclick = sell3;
     button5.onclick = goStore;
-    text.innerHTML = "<strong>Sell weapon:<br>---stick for 1 gold ---dagger for 5 gold<br> ---claw hammer for 1 gold ---sword for 40 gold";
-
+    text.innerHTML = "<strong>Sell weapon:</strong> <br>---stick for 1 gold ---dagger for 5 gold<br> ---claw hammer for 20 gold ---sword for 40 gold";
 }
 
-function sellWeapon(sold){
-    console.log(sold)
+function sellWeapon(abra){
+    console.log(abra)
     if (inventory.length <= 1){
-        sellWeaponShortened(0);
+        sellWeaponCore(0);
 
         button2.setAttribute("style", "display: none");
         button3.setAttribute("style", "display: none");
         button4.setAttribute("style", "display: none");
     } else if(inventory.length == 2){
-        sellWeaponShortened(0);
+        sellWeaponCore(0);
 
         button3.setAttribute("style", "display: none");
         button4.setAttribute("style", "display: none");
     } else if(inventory.length == 3) {
-        sellWeaponShortened(0);
+        sellWeaponCore(0);
 
         button4.setAttribute("style", "display: none");
     } else {
-        sellWeaponShortened(0);
+        sellWeaponCore(0);
     }
 }
 
@@ -293,7 +301,7 @@ function sell0(){
  }
 
 function giveWeapon(bon){
-    if (inventory.includes(stored[bon].name)) {  //check if player has the weapon
+    if (inventory.includes(stored[bon].name)) {  //check if player has the w        eapon
         if (bon == 0){
             giveWeaponCore(bon);
         }else{
@@ -311,16 +319,80 @@ function giveWeapon(bon){
 function giveWeaponCore(bon2){ 
     console.log(bon2)  
     if (inventory.length > 1) {  //lensure player remains with at least 1 weapon
-
+        
         gold += stored[bon2].price;
         currentWeapon -= 1;
+        text.innerText= stored[bon2].name+" sold for "+ stored[bon2].price+" gold!";
         inventory.splice([bon2], 1);
         stored.splice([bon2], 1);
-        text.innerText= weapons[bon2].text2;
         goldText.innerText = gold;
         sellWeapon(1);  //to refresh the page after every purchase
 
     } else {
         text.innerText="You cannot have zero weapons"
     }
+}
+
+function displayDetails(pak) {
+   text.innerHTML = "name: "+stored[pak].name+"<br> power: "+stored[pak].power
+}
+
+function seeInventory(){
+    text.innerText = "Click on a weapon to see more details";
+    
+    if (inventory.length == 1){
+        button1.innerText = stored[0].name;
+        button1.onclick = display0;
+        button2.innerText = "Go back to town";
+        button2.onclick = goTown;
+        button3.setAttribute("style", "display: none");
+        button4.setAttribute("style", "display: none");
+        button5.setAttribute("style", "display: none")
+    } else if(inventory.length == 2){
+        button1.innerText = stored[0].name;
+        button1.onclick = display0;
+        button2.innerText = stored[1].name;
+        button2.onclick = display1;
+        button3.innerText = "Go back to town square";
+        button3.onclick = goTown;
+        button4.setAttribute("style", "display: none");
+        button5.setAttribute("style", "display: none")
+    } else if(inventory.length == 3){
+        button1.innerText = stored[0].name;
+        button1.onclick = display0;
+        button2.innerText = stored[1].name;
+        button2.onclick = display1;
+        button3.innerText = stored[2].name;
+        button3.onclick = display2;
+        button4.innerText = "Go back to town square";
+        button4.onclick = goTown;
+        button5.setAttribute("style", "display: none")
+    }else{
+        button1.innerText = stored[0].name;
+        button1.onclick = display0;
+        button2.innerText = stored[1].name;
+        button2.onclick = display1;
+        button3.innerText = stored[2].name;
+        button3.onclick = display2;
+        button4.innerText = stored[3].name;
+        button4.onclick = display3;
+        button5.setAttribute("style", "display: inline-block");
+        button5.innerText = "Go back to town square";
+        button5.onclick = goTown;
+        }
+            
+}
+
+
+function display0(){
+    displayDetails(0)
+}
+function display1(){
+    displayDetails(1)
+}
+function display2(){
+    displayDetails(2)
+}
+function display3(){
+    displayDetails(3)
 }
