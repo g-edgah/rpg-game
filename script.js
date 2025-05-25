@@ -248,8 +248,7 @@ function fightBeast(){
     console.log("fighting beast");
 }
 
-function sellWeaponCore(d){
-    console.log(d)
+function sellWeaponCore(abra2){
     showButtons();
     button1.innerText = inventory[0];
     button2.innerText = inventory[1];
@@ -262,28 +261,33 @@ function sellWeaponCore(d){
     button3.onclick = sell2;
     button4.onclick = sell3;
     button5.onclick = goStore;
-    text.innerHTML = "<strong>Sell weapon:</strong> <br>---stick for 1 gold ---dagger for 5 gold<br> ---claw hammer for 20 gold ---sword for 40 gold";
+
+    if (abra2 == "[object MouseEvent]"){  //text will only update with sold items if an item has been sold
+        text.innerHTML = "<strong>Sell weapon:</strong> <br>---stick for 1 gold ---dagger for 5 gold<br> ---claw hammer for 20 gold ---sword for 40 gold";
+    } else {  
+        text. innerText = abra2
+    }
 }
 
 function sellWeapon(abra){
-    console.log(abra)
+    
     if (inventory.length <= 1){
-        sellWeaponCore(0);
+        sellWeaponCore(abra);
 
         button2.setAttribute("style", "display: none");
         button3.setAttribute("style", "display: none");
         button4.setAttribute("style", "display: none");
     } else if(inventory.length == 2){
-        sellWeaponCore(0);
+        sellWeaponCore(abra);
 
         button3.setAttribute("style", "display: none");
         button4.setAttribute("style", "display: none");
     } else if(inventory.length == 3) {
-        sellWeaponCore(0);
+        sellWeaponCore(abra);
 
         button4.setAttribute("style", "display: none");
     } else {
-        sellWeaponCore(0);
+        sellWeaponCore(abra);
     }
 }
 
@@ -322,20 +326,17 @@ function giveWeaponCore(bon2){
         
         gold += stored[bon2].price;
         currentWeapon -= 1;
-        text.innerText= stored[bon2].name+" sold for "+ stored[bon2].price+" gold!";
+        let boughtText= stored[bon2].name+" sold for "+ stored[bon2].price+" gold!";
         inventory.splice([bon2], 1);
         stored.splice([bon2], 1);
         goldText.innerText = gold;
-        sellWeapon(1);  //to refresh the page after every purchase
+        sellWeapon(boughtText);  //to refresh the page after every purchase
 
     } else {
         text.innerText="You cannot have zero weapons"
     }
 }
 
-function displayDetails(pak) {
-   text.innerHTML = "name: "+stored[pak].name+"<br> power: "+stored[pak].power
-}
 
 function seeInventory(){
     text.innerText = "Click on a weapon to see more details";
@@ -396,3 +397,7 @@ function display2(){
 function display3(){
     displayDetails(3)
 }
+
+function displayDetails(pak) {
+    text.innerHTML = "name: "+stored[pak].name+"<br> power: "+stored[pak].power
+ }
