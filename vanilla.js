@@ -397,7 +397,7 @@ function giveWeaponCore(){
 
 
 function seeInventory(){
-    text.innerHTML = "Click on a weapon to see more details and/or to equip it<br><strong>your current weapon is</strong><br><strong>Name: </strong>"+equiped[0].name+"<br><strong>Power: </strong>"+equiped[0].power;
+    text.innerHTML = "Click on a weapon to see more details and/or to equip it<br><strong>your current weapon is: </strong><br><strong>Name: </strong>"+equiped[0].name+"<br><strong>Power: </strong>"+equiped[0].power;
 
     if (inventory.length == 1){
         button1.innerText = stored[0].name;
@@ -465,14 +465,18 @@ function display3(){
 }
 
 function displayDetails(pak) {
-    saidButton = "button"+pak;
-    console.log(saidButton)
-
     text.innerHTML = "Name: "+stored[pak].name+"<br> Power: "+stored[pak].power+"<br> <button id='yes'> Equip "+stored[pak].name+"</button> <br> Your current weapon is "+equiped[0].name+" with a power of "+equiped[0].power;
     buttonYes = document.querySelector("#yes");
-    buttonNo = document.querySelector("#no");
     pako = pak;
+    saidButton = "button"+pak;
+    console.log(saidButton);
+
+    if (stored[pak].name == equiped[0].name){
+        buttonYes.innerText = "Already quiped!";
+        buttonYes.style.opacity = 0.5;
+    } else {
     buttonYes.onclick = chosen;
+    }
 }
 
 function chosen(){
