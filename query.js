@@ -1,3 +1,5 @@
+//jquery 
+
 let xp = 0;
 let health = 100;
 let gold = 100;
@@ -111,22 +113,22 @@ button4.onclick = locations[0]["button functions"][3];
 
 
 function showButtons(){
-    button4.style.display = "inline-block";
-    button5.style.display = "inline-block";
+    $(button4).css("display", "inline-block");
+    $(button5).css("display", "inline-block");
 }
 
 function hideButtons(){
-    button4.style.display = "none";
-    button5.style.display = "none";
+    $(button4).css("display", "none");
+    $(button5).css("display", "none");
 }
 function showFirstButtons(){
-    button2.style.display = "inline-block";
-    button3.style.display = "inline-block";
+    $(button2).css("display", "inline-block");
+    $(button3).css("display", "inline-block");
     
 }
 function hideLastButton(){
-    button4.style.display = "inline-block";
-    button5.style.display = "none";
+    $(button4).css("display", "inline-block");
+    $(button5).css("display", "none");
 }
 
 
@@ -144,17 +146,17 @@ function update(location){
 }
 
 function goTown(){
-    monsterStats.style.display = "none";
-    button3.style.display= "inline-block";
-    button4.style.display = "inline-block";
-    button5.style.display= "none";
+    $(monsterStats).css("display", "none");
+    $(button3).css("display", "inline-block");
+    $(button4).css("display", "inline-block");
+    $(button5).css("display", "none");
     update(locations[0]);
 }
 
 function goStore(){
     console.log("store");
-    button5.style.display = "none";
-    button4.style.display = "inline-block";
+    $(button5).css("display", "none");
+    $(button4).css("display", "inline-block");
     showFirstButtons();
     
     update(locations[1]);
@@ -164,7 +166,7 @@ function goStore(){
 
 function goCave(){
     hideButtons;
-    button4.style.display = "display: none";
+    $(button4).css("display", "none");
     update(locations[2]);
 
 }
@@ -193,7 +195,7 @@ function buyWeapon(){
     button2.innerText = weapons[2]["name"];
     button3.innerText = weapons[3]["name"];
     button4.innerText ="go back to the store";
-    button5.style.display = "none";
+    $(button5).css("display", "none");
 ; 
     button1.onclick = addDagger;
     button2.onclick = addHammer;
@@ -256,7 +258,7 @@ function fightBeast(){
     goFight();
 }
 function fightDragon(){
-    button4.style.display = "none";
+    $(button4).css("display", "none");
     fighting = 2;
     goFight();
 }
@@ -266,7 +268,7 @@ function goFight(){
     monsterHealth = monsters[fighting].health;
     update(locations[3]);
     //monsterStats.style.display = "block";
-    monsterStats.style.display = "block";
+    $(monsterStats).css("display", "block");
     //text.innerText = "go fight";
 }
 
@@ -304,18 +306,18 @@ function sellWeapon(abra){
     if (inventory.length <= 1){
         sellWeaponCore(abra);
 
-        button2.style.display= "none";
-        button3.style.display = "none";
-        button4.style.display = "none";
+        $(button2).css("display", "none");
+        $(button3).css("display", "none");
+        $(button4).css("display", "none");
     } else if(inventory.length == 2){
         sellWeaponCore(abra);
 
-        button3.style.display = "none";
-        button4.style.display = "none";
+        $(button3).css("display", "none");
+        $(button4).css("display", "none");
     } else if(inventory.length == 3) {
         sellWeaponCore(abra);
 
-        button4.style.display = "none";
+        $(button4).css("display", "none");
     } else {
         sellWeaponCore(abra);
     }
@@ -376,18 +378,9 @@ function seeInventory(){
         button1.onclick = display0;
         button2.innerText = "Go back to town";
         button2.onclick = goTown;
-        button3.style.display = "none";
-        button4.style.display = "none";
-        button5.style.display = "none";
-    } else if(inventory.length == 2){
-        button1.innerText = stored[0].name;
-        button1.onclick = display0;
-        button2.innerText = stored[1].name;
-        button2.onclick = display1;
-        button3.innerText = "Go back to town square";
-        button3.onclick = goTown;
-        button4.style.display = "none";
-        button5.style.display = "none";
+        $(button3).css("display", "none")
+        $(button4).css("display", "none");
+        $(button5).css("display", "none");
     } else if(inventory.length == 3){
         button1.innerText = stored[0].name;
         button1.onclick = display0;
@@ -397,7 +390,7 @@ function seeInventory(){
         button3.onclick = display2;
         button4.innerText = "Go back to town square";
         button4.onclick = goTown;
-        button5.style.display = "none"
+        $(button5).css("display", "none");
     }else{
         button1.innerText = stored[0].name;
         button1.onclick = display0;
@@ -407,7 +400,7 @@ function seeInventory(){
         button3.onclick = display2;
         button4.innerText = stored[3].name;
         button4.onclick = display3;
-        button5.style.display = "inline-block";
+        $(button5).css("display", "inline-block");
         button5.innerText = "Go back to town square";
         button5.onclick = goTown;
         }
