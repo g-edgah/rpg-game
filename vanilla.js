@@ -7,6 +7,7 @@ let currentWeapon = 1;
 let fighting;          
 let monsterHealth;
 let inventory = ["Stick"];
+let defeatedMonsters = []
 
 
 const button1 = document.querySelector("#button1");
@@ -112,6 +113,13 @@ const locations=[
     "button functions":[attack, dodge, goTown],
     text: "You are fighting a monster"
     },
+    /*
+    {
+    name: "kill monster",
+    "button text":["Go to town square"],
+    "button functions":[goTown],
+    text: "The monster has been defeated. You have gained "+xpGained+" xp and "+goldGainedTotal+"gold for your victory."
+    },*/
 ]
 
 // initialize buttons
@@ -158,6 +166,7 @@ function update(location){
 function goTown(){
     opacity(0);
     monsterStats.style.display = "none";
+    button2.style.display= "inline-block"
     button3.style.display= "inline-block";
     button4.style.display = "inline-block";
     button5.style.display= "none";
@@ -166,7 +175,6 @@ function goTown(){
 
 function goStore(){
     opacity();
-    console.log("store");
     button5.style.display = "none";
     button4.style.display = "inline-block";
     showFirstButtons();
@@ -298,12 +306,58 @@ function goFight(){
 
 function attack(){
     text.innerText = monsters[fighting].name+" attacking!"
-    text.innerText += " You attack it with your "+stored[inventory.length-1].name; //auto equiping strongest weapon
+    text.innerText += " You attack it with your "+equiped[0].name+".";
+    health -= monsters[fighting].level;
+    monsterHealth -= equiped[0].power+Math.floor(Math.random()*xp)+1;
+    healthText.innerText = health;
+    monsterHealthText.innerText = monsterHealth;
+    if (health <= 0){
+        health = 0;
+        healthText.innerText = health
+        lose();
+    } else if (monsterHealth <= 0){
+        monsterHealth = 0;
+        defeatMonster();
+        monsterHealthText.innerText = monsterHealth
+    }
+
 }
 
-function dodge(){
-    text.innerText = "dodging"
+function attackCore(){
+
 }
+
+function lose(){
+
+}
+
+function defeatMonster(){
+    goldGained = Math.floor(monsters[fighting].level*6.7)
+    gold += goldGained;
+    goldGainedTotal = 0;
+    goldGainedTotal += goldGained;
+    xpGained = monsters[fighting].level
+    //update(locations[4])
+    xp += xpGained;
+    goldText.innerText = gold; 
+    xpText.innerText = xp;
+    
+    button2.style.display = "none";
+    button3.style.display = "none";
+    button4.style.display = "none";
+    button5.style.display = "none";
+
+    button1.innerText = "Go back to town";
+    button1.onclick = goTown;
+    text.innerText = "The monster has been defeated. You have gained "+xpGained+" xp and "+goldGainedTotal+" gold for your victory.";
+    defeatedMonsters.append(monsters[fighting].name)
+}
+
+
+function dodge(){
+    text.innerText = "you dodge the attack from the "+monsters[fighting].name+".";
+}
+
 
 function sellWeaponCore(){
     showButtons();
@@ -379,7 +433,6 @@ function giveWeapon(num){
 }
 
 function giveWeaponCore(){ 
-    console.log(bon)  
     if (inventory.length > 1) {  //lensure player remains with at least 1 weapon
         
         gold += stored[bon].sellPrice;
@@ -468,8 +521,6 @@ function displayDetails(pak) {
     text.innerHTML = "Name: "+stored[pak].name+"<br> Power: "+stored[pak].power+"<br> <button id='yes'> Equip "+stored[pak].name+"</button> <br> Your current weapon is "+equiped[0].name+" with a power of "+equiped[0].power;
     buttonYes = document.querySelector("#yes");
     pako = pak;
-    saidButton = "button"+pak;
-    console.log(saidButton);
 
     if (stored[pak].name == equiped[0].name){
         buttonYes.innerText = "Already quiped!";
