@@ -195,6 +195,7 @@ function goCave(){
 function buyGold(){
     console.log("buying gold");
 }
+
 function buyHealth(){
     if (health < 100 ){
         if (gold >= 10){
@@ -313,9 +314,8 @@ function attack(){
     
     
     if (isMonsterHit || (health <= 20) && (equiped[0].name !== "Hilt")){
-        if (Math.random() <= 1){
+        if (Math.random() <= 0.1){
             let index = stored.findIndex(item => item.name === equiped[0].name);
-            console.log(index)
             text.innerText = "Your "+equiped[0].name+" broke!";
            
             if (index !== -1){ 
@@ -336,12 +336,20 @@ function attack(){
             } else {
                     text.innerText = " Your last weapon broke!"
                     //equiped.push(weapons[0]); 
-                    stored = stored.push(weapons[0]);  //give player stick if last weapon breaks
+                    stored.push(weapons[0]);  //give player stick if last weapon breaks
                     //inventory.push(weapons[0].name);
                 }
         } else{
-            text.innerText = "The brocken weapon has no effect"
-            attack();
+            text.innerText = "The brocken weapon has no effect on the monster"
+            health -= getMonsterAttackValue(monsters[fighting].level); //monster will still damage player if he continues to attack with broken weapon
+            if (health <= 0){
+                health = 0;
+                healthText.innerText = health
+                lose();
+            } else {
+                text.innerText = "The brocken weapon has no effect on the monster";
+                healthText.innerText = health;
+            }
         }
         } else {
             health -= getMonsterAttackValue(monsters[fighting].level);
@@ -356,11 +364,6 @@ function attack(){
             monsterHealth = 0;
             fighting === 2 ? winGame() : defeatMonster();
 
-        /* if (fighting === 2){
-                winGame();
-            } else {
-                defeatMonster();
-            }*/
         }
     }
     } else{
@@ -374,7 +377,6 @@ function attack(){
 
 function getMonsterAttackValue(level){
      let hit = (level * 5) - (Math.floor(Math.random() * xp));
-     console.log(hit);
      return hit;
 }
 
