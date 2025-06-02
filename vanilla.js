@@ -116,6 +116,12 @@ const locations=[
     "button functions":[attack, dodge, goTown],
     text: "You are fighting a monster"
     },
+    {
+    name: "easter egg",
+    "button text": ["2", "8", "Go to town"],
+    "button functions":[pickTwo, pickEight, goTown],
+    text: "You find a secret game. Pick a numberabove. Ten numbers will be randomly chosen between o and 10. if the number you chose matches one of the random numbers, you win!"
+    }
     /*
     {
     name: "kill monster",
@@ -192,9 +198,6 @@ function goCave(){
 
 }
 
-function buyGold(){
-    console.log("buying gold");
-}
 
 function buyHealth(){
     if (health < 100 ){
@@ -220,14 +223,55 @@ function buyWeapon(){
     button5.innerText ="go back to the store";
     
 
-;   button1.onclick = addStick;
-    button2.onclick = addDagger;
-    button3.onclick = addHammer;
-    button4.onclick = addSword;
+;   button1.onclick = displayw0;
+    button2.onclick = displayw1;
+    button3.onclick = displayw2;
+    button4.onclick = displayw3;
     button5.onclick = goStore;
-    text.innerHTML = "<strong>Buy weapon:</strong><br> ---dagger for 5 gold  ---claw hammer for 20 gold<br>  ---Sword for 40 gold";
+    text.innerHTML = "<strong>click on a weapon to see more details</strong>";
 }
 
+function displayw0(){
+    displayDetailsw(0)
+    opacity();
+    button1.style.opacity = 0.5;
+}
+function displayw1(){
+    displayDetailsw(1)
+    opacity();
+    button2.style.opacity = 0.5;
+}
+function displayw2(){
+    displayDetailsw(2)
+    opacity();
+    button3.style.opacity = 0.5;
+}
+function displayw3(){
+    displayDetailsw(3)
+    opacity();
+    button4.style.opacity = 0.5;
+}
+
+function displayDetailsw(pok) {
+    text.innerHTML = "Name: "+weapons[pok].name+"<br>Power: "+weapons[pok].power+"<br> Price: "+weapons[pok].price+"<br> <button id='buy'> Buy "+weapons[pok].name+"</button>";
+    buttonBuy = document.querySelector("#buy");
+    pakow = pok;
+
+    if (inventory.includes(weapons[pok].name)){
+        buttonBuy.innerText = "Already bought!";
+        buttonBuy.style.opacity = 0.5;
+    } else {
+        if (pok == 0){
+            buttonBuy.onclick = addStick;
+        } else if (pok ==1 ){
+            buttonBuy.onclick = addDagger;
+        } else if (pok ==2 ){
+            buttonBuy.onclick = addHammer;
+        } else if (pok ==3 ){
+            buttonBuy.onclick = addSword;
+        }
+    }
+}
 
 function getWeapon(weaponIndex){
     if (inventory.includes(weapons[weaponIndex].name)) {  //check if player has the weapon already
@@ -420,13 +464,14 @@ function defeatMonster(){
     goldText.innerText = gold; 
     xpText.innerText = xp;
     
-    button2.style.display = "none";
     button3.style.display = "none";
     button4.style.display = "none";
     button5.style.display = "none";
 
     button1.innerText = "Go back to town";
-    button1.onclick = goTown;
+    button1.onclick = easterEgg;
+    button2.innerText = "Go back to town";
+    button2.onclick = goTown;
     text.innerText = "The monster has been defeated. You have gained "+xpGained+" xp and "+goldGainedTotal+" gold for your victory.";
     defeatedMonsters.push(monsters[fighting].name)
 }
@@ -445,16 +490,59 @@ function sellWeaponCore(){
     button4.innerText =inventory[3];
     button5.innerText ="go back to the store";
 
-    button1.onclick = sell0; 
-    button2.onclick = sell1;
-    button3.onclick = sell2;
-    button4.onclick = sell3;
+    button1.onclick = displaySell0; 
+    button2.onclick = displaySell1;
+    button3.onclick = displaySell2;
+    button4.onclick = displaySell3;
     button5.onclick = goStore;
 
     if (abra == "[object MouseEvent]"){  //text will only update with sold items if an item has been sold
-        text.innerHTML = "<strong>Sell weapon:</strong> <br>---stick for 1 gold ---dagger for 3 gold<br> ---claw hammer for 15 gold ---sword for 30 gold";
+        text.innerHTML = "<strong>Sell weapon:</strong> Click on a weapon to see more details.";
     } else {  
         text. innerText = abra
+    }
+}
+
+function displaySell0(){
+    displayDetailss(0)
+    opacity();
+    button1.style.opacity = 0.5;
+}
+function displaySell1(){
+    displayDetailss(1)
+    opacity();
+    button2.style.opacity = 0.5;
+}
+function displaySell2(){
+    displayDetailss(2)
+    opacity();
+    button3.style.opacity = 0.5;
+}
+function displaySell3(){
+    displayDetailss(3)
+    opacity();
+    button4.style.opacity = 0.5;
+}
+
+function displayDetailss(pik) {
+    text.innerHTML = "Name: "+stored[pik].name+"<br>Power: "+stored[pik].power+"<br> Selling Price: "+stored[pik].sellPrice+"<br> <button id='sell'> Sell "+stored[pik].name+"</button>";
+    buttonSell = document.querySelector("#sell");
+    pakos = pik;
+
+    if (inventory.includes(stored[pik].name)){
+        if (pik == 0){
+            buttonSell.onclick = sell0;
+        } else if (pik ==1 ){
+            buttonSell.onclick =sell1;
+        } else if (pik ==2 ){
+            buttonSell.onclick = sell2;
+        } else if (pik ==3 ){
+            buttonSell.onclick = sell3;
+        }
+        
+    } else {
+        buttonSell.innerText = "Already sold!";
+        buttonSell.style.opacity = 0.5;
     }
 }
 
@@ -656,4 +744,43 @@ function restart(){
         },
     ];
     goTown();
+}
+
+function easterEgg (){
+    update(locations[4]);
+}
+
+function pickTwo(){
+    pick(2);
+}
+function pickEight(){
+    pick(8);
+}
+function pick (guess) {
+    let numbers = [];
+
+    while (numbers.length < 5 ){
+        numbers.push(Math.floor(Math.random() * 11));
+    }
+
+    text.innerText = "You picked "+ guess +". Here are the random numbers: \n"
+    //for (let x in numbers) {
+        //text.innerText += numbers[x];
+    for (let i = 0; i < 5; i++) {
+        text.innerText += numbers[i] + "\n";
+    }
+    if (numbers.indexOf(guess) !== -1){
+        text.innerText += "You guessed right! You win 20 gold!";
+        gold += 20;
+        goldText.innerText = gold;
+    } else {
+        text.innerText += "You guessed wrong! You lose 5 health!";
+        health -= 5;
+        healthText.innerText = health;
+
+        if (health <= 0){
+            lose();
+        }
+    }
+
 }
