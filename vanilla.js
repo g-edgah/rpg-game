@@ -52,7 +52,7 @@ const weapons = [
 ];
 
 
-const stored = [
+let stored = [
     {
         name: "Stick",
         power: 5,
@@ -61,7 +61,7 @@ const stored = [
 ];
 
 
-const equiped = [
+let equiped = [
     {
         name: "Stick",
         power: 5,
@@ -319,20 +319,28 @@ function attack(){
     } else if (monsterHealth <= 0){
         monsterHealth = 0;
         defeatMonster();
-        monsterHealthText.innerText = monsterHealth
+    } else {
+
     }
 
 }
 
-function attackCore(){
-
-}
 
 function lose(){
+    text.innerText = "You lost!! Dead!! Finito!! The end!!";
+    button2.style.display = "none";
+    button3.style.display = "none";
+    button4.style.display = "none";
+    button5.style.display = "none";
 
+    button1.innerText = "Restart";
+    button1.onclick = restart;
+    
 }
 
 function defeatMonster(){
+    //monsterHealthText.innerText = monsterHealth
+    monsterStats.style.display = "none";
     goldGained = Math.floor(monsters[fighting].level*6.7)
     gold += goldGained;
     goldGainedTotal = 0;
@@ -542,4 +550,34 @@ function opacity(){
     button2.style.opacity = 1;
     button3.style.opacity = 1;
     button4.style.opacity = 1;
+}
+
+function restart(){
+    xp = 0;
+    health = 100;
+    currentWeapon = 0;
+    inventory = ["stick"]
+    gold = 50;
+    goldText.innerText = gold;
+    healthText.innerText = health;
+    xpText.innerText = xp;
+    defeatedMonsters = [];
+
+    stored = [
+    {
+        name: "Stick",
+        power: 5,
+        sellPrice: 1,
+    },
+    ];
+
+
+    equiped = [
+        {
+            name: "Stick",
+            power: 5,
+            sellPrice: 1,
+        },
+    ];
+    goTown();
 }
