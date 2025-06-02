@@ -37,6 +37,7 @@ div[id="monsterStats"]{
     color: white;
     padding: 2px;
     display: none;
+    background-color: red;
 }
 
 div[id="text"]{

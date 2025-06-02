@@ -47,7 +47,7 @@ const weapons = [
         name: "Sword",
         power: 100,
         price: 40,
-        sellPrice: 30, 
+        sellPrice: 30,
     }
 ];
 
@@ -56,6 +56,7 @@ let stored = [
     {
         name: "Stick",
         power: 5,
+        Price: 2,
         sellPrice: 1,
     },
 ];
@@ -65,6 +66,7 @@ let equiped = [
     {
         name: "Stick",
         power: 5,
+        Price: 2,
         sellPrice: 1,
     },
 ];
@@ -308,23 +310,77 @@ function goFight(){
 function attack(){
     text.innerText = monsters[fighting].name+" attacking!"
     text.innerText += " You attack it with your "+equiped[0].name+".";
-    health -= monsters[fighting].level;
-    monsterHealth -= equiped[0].power+Math.floor(Math.random()*xp)+1;
-    healthText.innerText = health;
-    monsterHealthText.innerText = monsterHealth;
-    if (health <= 0){
-        health = 0;
-        healthText.innerText = health
-        lose();
-    } else if (monsterHealth <= 0){
-        monsterHealth = 0;
-        defeatMonster();
-    } else {
+    
+    
+    if (isMonsterHit || (health <= 20) && (equiped[0].name !== "Hilt")){
+        if (Math.random() <= 1){
+            let index = stored.findIndex(item => item.name === equiped[0].name);
+            console.log(index)
+            text.innerText = "Your "+equiped[0].name+" broke!";
+           
+            if (index !== -1){ 
+                stored.splice(index, 1)
+                inventory.splice(index, 1);
+                //stored = stored.filter(item => item.name !== equiped[0].name)
+                
+                equiped.splice(0, 1);
+                equiped.push( {     //equips a broken hilt with zero attack power
+                    name: "Hilt",
+                    power: 0,
+                    sellPrice: 0,
+                    namba : 4
+                    })
+                
+                if (inventory.length >=1 ){
+                    text.innerText += " You can equip another weapon from the inventory";
+            } else {
+                    text.innerText = " Your last weapon broke!"
+                    //equiped.push(weapons[0]); 
+                    stored = stored.push(weapons[0]);  //give player stick if last weapon breaks
+                    //inventory.push(weapons[0].name);
+                }
+        } else{
+            text.innerText = "The brocken weapon has no effect"
+            attack();
+        }
+        } else {
+            health -= getMonsterAttackValue(monsters[fighting].level);
+            monsterHealth -= equiped[0].power+Math.floor(Math.random()*xp)+1;
+            healthText.innerText = health;
+            monsterHealthText.innerText = monsterHealth;
+            if (health <= 0){
+                health = 0;
+                healthText.innerText = health
+                lose();
+            } else if (monsterHealth <= 0){
+            monsterHealth = 0;
+            fighting === 2 ? winGame() : defeatMonster();
 
+        /* if (fighting === 2){
+                winGame();
+            } else {
+                defeatMonster();
+            }*/
+        }
     }
+    } else{
+        text.innerText += " You miss!";
+    }
+     
+
+    
 
 }
 
+function getMonsterAttackValue(level){
+     let hit = (level * 5) - (Math.floor(Math.random() * xp));
+     console.log(hit);
+     return hit;
+}
+
+function isMonsterHit(){
+    return Math.random() > 0.2 ; //makes it such that its true 80% of the time
+}
 
 function lose(){
     text.innerText = "You lost!! Dead!! Finito!! The end!!";
@@ -336,6 +392,17 @@ function lose(){
     button1.innerText = "Restart";
     button1.onclick = restart;
     
+}
+function winGame(){
+    monsterStats.style.display = "none";
+    text.innerText = "You won!! yaay!!";
+    button2.style.display = "none";
+    button3.style.display = "none";
+    button4.style.display = "none";
+    button5.style.display = "none";
+
+    button1.innerText = "Restart";
+    button1.onclick = restart;
 }
 
 function defeatMonster(){
@@ -359,7 +426,7 @@ function defeatMonster(){
     button1.innerText = "Go back to town";
     button1.onclick = goTown;
     text.innerText = "The monster has been defeated. You have gained "+xpGained+" xp and "+goldGainedTotal+" gold for your victory.";
-    defeatedMonsters.append(monsters[fighting].name)
+    defeatedMonsters.push(monsters[fighting].name)
 }
 
 
@@ -461,7 +528,14 @@ function giveWeaponCore(){
 function seeInventory(){
     text.innerHTML = "Click on a weapon to see more details and/or to equip it<br><strong>your current weapon is: </strong><br><strong>Name: </strong>"+equiped[0].name+"<br><strong>Power: </strong>"+equiped[0].power;
 
-    if (inventory.length == 1){
+    if (inventory.length == 0){
+        button1.innerText = "Go back to town";
+        button1.onclick = goTown;
+        button2.style.display = "none";
+        button3.style.display = "none";
+        button4.style.display = "none";
+        button5.style.display = "none";
+    } else if (inventory.length == 1){
         button1.innerText = stored[0].name;
         button1.onclick = display0;
         button2.innerText = "Go back to town";
@@ -556,7 +630,7 @@ function restart(){
     xp = 0;
     health = 100;
     currentWeapon = 0;
-    inventory = ["stick"]
+    inventory = ["Stick"]
     gold = 50;
     goldText.innerText = gold;
     healthText.innerText = health;
